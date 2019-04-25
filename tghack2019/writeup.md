@@ -317,3 +317,15 @@ After this I googled (and fiddled with) SSTIs for python, and ended up with the 
 The weird URL was my requestbin so I could see the output.
 
 By simply changing `main.py` to `flag.txt`, we get the flag! :)
+
+## [Web // 100pt] itsmagic
+
+_Security is almost as bad as it's learning, sheesh_.
+
+We try to login, works no matter what. Always same ID. The hint basically tells you the answer... Simply change the ID from 1338 to 1337 and you have your flag. Wtf?
+
+## [Web // 100pt] Wandshop
+
+Well, this is also a very easy task, so short writeup.
+
+You need to get the most expensive wand, which you can't afford. So, let's open burp and check out the request. Well would you look at that, it passes along the price. Just change it to _whatever_ and submit, and you have your flag.
