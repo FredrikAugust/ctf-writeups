@@ -113,3 +113,126 @@ Now we only have the actual key checking left;
       }
       ret_code = 1;
 ```
+
+First things first, let's clean this up.
+
+```c
+      i = 0;
+      while (i < 0xc) {
+        fun1_ret = fun1(user_input[i],user_input[i + 1]);
+        if ((int)fun1_ret == 0) {
+          return 0;
+        }
+        i = i + 2;
+      }
+      j = 0xc;
+      while (j < 0x18) {
+        fun2_ret = fun2(user_input[j],user_input[j + 1]);
+        if ((int)fun2_ret == 0) {
+          return 0;
+        }
+        j = j + 2;
+      }
+      ret_code = 1;
+```
+
+We see that we want both of the functions to return `> 0`. Let's start with the first part, which works with the first part of the key `0x00 <= x <= 0xc`.
+
+After cleaning up the parameters, we end up with this snippet;
+
+```c
+ulong fun1(char charA,char charB)
+{
+  return (int)(uint)((char)(charA ^ charB ^ 0x42U) < 'F');
+}
+```
+
+(_`0x42U == 'B'`_)
+
+Let's write some quick python to brute-force this (also included part two, as it's just the same logic).
+
+```python
+result = ''
+
+def find_stage_1():
+	for x in range(ord('A'), ord('Z')):
+		for y in range(ord('A'), ord('Z')):
+			if (x ^ y ^ 0x42) < ord('F'):
+				return chr(x) + chr(y)
+
+
+def find_stage_2():
+	for x in range(ord('A'), ord('Z')):
+		for y in range(ord('A'), ord('Z')):
+			if (x ^ y ^ 0x13) > 0x1e:
+				return chr(x) + chr(y)
+
+for i in range(0, 0xc, 2):
+	result += find_stage_1()	
+
+for i in range(0xc, 0x18, 2):
+	result += find_stage_2()	
+
+print(result)
+```
+
+Now, we need 250 unique keys, so let's bruteforce that as well :)
+
+Now, this is not a clean solution, but it works, in true CTF fashion.
+
+```python
+ones = []
+
+for x in range(ord('A'), ord('Z')):
+	for y in range(ord('A'), ord('Z')):
+		if (x ^ y ^ 0x42) < ord('F') and len(ones) < 2:
+			ones.append(chr(x) + chr(y))
+
+ones = [x + y for x in ones for y in ones]
+ones = [x + y for x in ones for y in ones]
+ones = [x + y for x in ones for y in ones]
+ones = [x[0:12] for x in ones]
+
+twos = []
+
+for x in range(ord('A'), ord('Z')):
+	for y in range(ord('A'), ord('Z')):
+		if (x ^ y ^ 0x13) > 0x1e and len(twos) < 2:
+			twos.append(chr(x) + chr(y))
+
+twos = [x + y for x in twos for y in twos]
+twos = [x + y for x in twos for y in twos]
+twos = [x + y for x in twos for y in twos]
+twos = [x[0:12] for x in twos]
+
+# print ','.join(ones)
+# print ','.join(twos)
+
+combos = []
+
+for a in ones:
+	for b in twos:
+		combos.append(a + b)
+
+print ', '.join(combos)
+
+print "\n\n\n{}".format(len(combos))
+```
+
+Basically, I just create a few letter combos, and then concat them together. This gives 65536 results, which should be sufficient. Now, when I created this, I didn't factor in the fact that this creates a bunch of duplicates, but I managed to hack my way around it in the end.
+
+What I ended up doing was the following:
+
+```python
+p = pwn.remote('keygen.tghack.no', 2222)
+
+for i in range(250):
+	print p.recv(1024)
+	p.sendline(combos[i*250])
+
+p.interactive()
+```
+
+There is no logic to this at all, but it works!
+
+Flag acquired!
