@@ -328,7 +328,7 @@ We try to login, works no matter what. Always same ID. The hint basically tells 
 
 Well, this is also a very easy task, so short writeup.
 
-You need to get the most expensive wand, which you can't afford. So, let's open burp and check out the request. Well would you look at that, it passes along the price. Just change it to _whatever_ and submit, and you have your flag.
+You need to get the most expensive wand, which you can't afford. So, let's open up the network tab in the browser to see what is being sent to the server. Well would you look at that, it passes along the price. Just change it to _whatever_ and submit, and you have your flag.
 
 ## [Forensics // 70pt] Filemagic
 
