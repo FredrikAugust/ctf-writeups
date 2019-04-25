@@ -11,29 +11,6 @@ uncompyle6 main.pyc
 
 Then simply copy the `print_flag` function into a repl, and run. (I had to change `chr(i ^ key)` to `chr(ord(i) ...`).
 
-## [RE // 200pt] Gringotts Digitalization Project
-
-We're handed a 64-bit ELF relocatable.
-
-`checksec` reveals the following:
-
-```
-~/Documents/ctf/tghack2019/gringott   
-❯ checksec pwn_module.ko 
-[*] '/home/igor/Documents/ctf/tghack2019/gringott/pwn_module.ko'
-    Arch:     amd64-64-little
-    RELRO:    No RELRO
-    Stack:    No canary found
-    NX:       NX enabled
-    PIE:      No PIE (0x0)
-```
-
-Let's see what the Ghidra tells us.
-
-For this challenge, the disassembled assembly from IDA was much better than Ghidras, so I ended up using that instead.
-
-The server isn't up, so I couldn't try further.
-
 ## [RE // 250pt] Cracking Magic
 
 `file <file>`
