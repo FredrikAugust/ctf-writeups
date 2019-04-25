@@ -236,3 +236,34 @@ p.interactive()
 There is no logic to this at all, but it works!
 
 Flag acquired!
+
+## [RE // 70pt] Elfish flag
+
+ELF exec again. We open it in Ghidra and realize that it's just a fuzzed flag. Let's unfuzz!
+
+Let's check out the function `flaggy` where the magic happens.
+
+```c
+  tg = 18260;
+                    /* if str2 is a nullptr */
+  if (str2 != (char *)0x0) {
+    local_24 = 0;
+    while (iVar1 = local_24 + 1, local_24 != 0) {
+      uVar2 = (uint)(iVar1 >> 0x1f) >> 0x1f;
+      abStack24[(long)iVar1] = tg[(long)(int)((iVar1 + uVar2 & 1) - uVar2)] ^ str2[(long)iVar1];
+      local_24 = iVar1;
+    }
+  }
+  i = 0;
+  while( true ) {
+    if ((uint)(byte)input[(long)i] + 100 != (uint)(byte)str1[(long)i]) break;
+    i = i + 1;
+  }
+  if (i == 0x19) {
+    printf("Congratz, you found the flag!");
+  }
+```
+  
+**This** is where the magic happens.
+
+But when reading this, something stood out to me. Input is never modified :think:. So, what happens if we take str1, and subtract 100 from every codepoint? Well, we get the flag. This was an easy task after all! :)
