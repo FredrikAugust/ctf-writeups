@@ -329,3 +329,19 @@ We try to login, works no matter what. Always same ID. The hint basically tells 
 Well, this is also a very easy task, so short writeup.
 
 You need to get the most expensive wand, which you can't afford. So, let's open burp and check out the request. Well would you look at that, it passes along the price. Just change it to _whatever_ and submit, and you have your flag.
+
+## [Forensics // 70pt] Filemagic
+
+You get a file with the following type
+
+```
+store.bin: DOS/MBR boot sector, code offset 0x3c+2, OEM-ID "mkfs.fat", sectors/cluster 4, root entries 512, sectors 2048 (volumes <=32 MB), Media descriptor 0xf8, sectors/FAT 2, sectors/track 32, heads 64, serial number 0x71a6dccf, label: "magic      ", FAT (12 bit)
+```
+
+`binwalk store.bin` to reveal that there is a png inside.
+
+OK, `binwalk --dd=png store.bin` to extract it.
+
+You're done.
+
+Open the 
